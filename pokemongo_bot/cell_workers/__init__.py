@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from catch_lured_pokemon import CatchLuredPokemon
-from catch_visible_pokemon import CatchVisiblePokemon
 from evolve_pokemon import EvolvePokemon
 from incubate_eggs import IncubateEggs
 from move_to_fort import MoveToFort
@@ -19,3 +17,8 @@ from collect_level_up_reward import CollectLevelUpReward
 from follow_cluster import FollowCluster
 from sleep_schedule import SleepSchedule
 from update_live_stats import UpdateLiveStats
+from update_live_inventory import UpdateLiveInventory
+from catch_pokemon import CatchPokemon
+from complete_tutorial import CompleteTutorial
+from random_pause import RandomPause
+from random_alive_pause import RandomAlivePause

@@ -193,6 +193,8 @@ class NicknamePokemon(BaseTask):
             'good_attack_threshold', DEFAULT_GOOD_ATTACK_THRESHOLD)
         self.template = self.config.get(
             'nickname_template', DEFAULT_TEMPLATE)
+        self.nickname_above_iv = self.config.get(
+            'nickname_above_iv', 0)
 
         self.translate = None
         locale = self.config.get('locale', 'en')
@@ -207,7 +209,8 @@ class NicknamePokemon(BaseTask):
         """
         for pokemon in pokemons().all():  # type: Pokemon
             if not pokemon.is_favorite or not self.ignore_favorites:
-                self._nickname_pokemon(pokemon)
+                if pokemon.iv >= self.nickname_above_iv:
+                    self._nickname_pokemon(pokemon)
 
     def _localize(self, string):
         if self.translate and string in self.translate:
@@ -222,7 +225,7 @@ class NicknamePokemon(BaseTask):
         """
 
         # We need id of the specific pokemon unstance to be able to rename it
-        instance_id = pokemon.id
+        instance_id = pokemon.unique_id
         if not instance_id:
             self.emit_event(
                 'api_error',

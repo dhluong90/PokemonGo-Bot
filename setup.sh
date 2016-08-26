@@ -30,6 +30,10 @@ rm -rf pgoencrypt.tar.gz
 rm -rf pgoencrypt
 }
 
+function Pokebotescapestring () {
+echo "$1" | sed 's/\//\\\//g' | sed 's/"/\\"/g' # escape slash and double quotes
+}
+
 function Pokebotconfig () {
 cd $pokebotpath
 read -p "enter 1 for google or 2 for ptc 
@@ -38,20 +42,16 @@ read -p "Input username
 " username
 read -p "Input password 
 " -s password
+password=$(Pokebotescapestring $password)
 read -p "
 Input location 
 " location
 read -p "Input gmapkey 
 " gmapkey
-cp -f configs/config.json.example configs/config.json && chmod 755 configs/config.json
-if [ "$auth" = "2" ] || [ "$auth" = "ptc" ]
-then
-sed -i "s/google/ptc/g" configs/config.json
-fi
-sed -i "s/YOUR_USERNAME/$username/g" configs/config.json
-sed -i "s/YOUR_PASSWORD/$password/g" configs/config.json
-sed -i "s/SOME_LOCATION/$location/g" configs/config.json
-sed -i "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" configs/config.json
+[[ $auth = "2" || $auth = "ptc" ]] && auth="ptc" || auth="google"
+sed -e "s/YOUR_USERNAME/$username/g" -e "s/YOUR_PASSWORD/$password/g" \
+  -e "s/SOME_LOCATION/$location/g" -e "s/GOOGLE_MAPS_API_KEY/$gmapkey/g" \
+  -e "s/google/$auth/g" configs/config.json.example > configs/config.json
 echo "Edit ./configs/config.json to modify any other config."
 }
 
@@ -60,8 +60,8 @@ cd $pokebotpath
 if [ "$(uname -s)" == "Darwin" ]
 then
 echo "You are on Mac os"
-sudo brew update 
-sudo brew install --devel protobuf
+brew update 
+brew install --devel protobuf
 elif [ $(uname -s) == CYGWIN* ]
 then
 echo "You are on Cygwin"
